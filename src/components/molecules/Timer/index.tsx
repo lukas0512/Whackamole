@@ -16,7 +16,7 @@ export const Timer = ({
     const timerRef = useRef<number>(timeInSeconds);
 
     useEffect(() => {
-        if (internalTimeInSeconds <= 0 && onEnd) {
+        if (internalTimeInSeconds === 0 && onEnd) {
             clearInterval(timerRef.current);
             onEnd();
         }
@@ -43,6 +43,7 @@ export const Timer = ({
             size='h1'
             textAlign='start'
             styleType={minutes === 0 && seconds <= 10 ? "secondary" : "primary"}
+            data-testid='timer'
         >
             {minutes}:{seconds < 10 ? `0${seconds}` : seconds}
         </Typography>

@@ -6,11 +6,11 @@ import { ContainerScoreStyled } from "./styled";
 export const Score = () => {
     const { score } = useRecoilValue(generalState);
     return (
-        <ContainerScoreStyled>
+        <ContainerScoreStyled data-testid='score-container'>
             <Typography size='h3' styleType='secondary'>
                 Score
             </Typography>
-            <Typography size='h2' styleType='primary'>
+            <Typography size='h2' styleType='primary' data-testid='score-value'>
                 {score}
             </Typography>
         </ContainerScoreStyled>

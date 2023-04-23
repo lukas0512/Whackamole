@@ -4,7 +4,7 @@ interface PropsHole {
     children?: React.ReactNode;
 }
 
-export const Hole = ({ children }: PropsHole) => {
-    return <ContainerHoleStyled>{children}</ContainerHoleStyled>;
+export const Hole = ({ children, ...props }: PropsHole) => {
+    return <ContainerHoleStyled {...props}>{children}</ContainerHoleStyled>;
 };
 

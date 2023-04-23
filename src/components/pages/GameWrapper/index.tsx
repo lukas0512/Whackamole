@@ -5,8 +5,8 @@ import { ModalHighScores } from "@components/organisms/ModalHighScores";
 import { WelcomeState } from "@components/organisms/WelcomeState";
 import HammerCursor from "@components/templates/HammerCursor";
 import { TIME_LIMIT } from "@src/constants";
-import { generalState } from "@src/state/atoms/generalState";
-import { useState } from "react";
+import { generalState, highScoresState } from "@src/state/atoms/generalState";
+import { useCallback, useState } from "react";
 import { useRecoilState } from "recoil";
 import {
     ContainerHoleMole,
@@ -17,7 +17,16 @@ import {
 export const GameWrapper = () => {
     const [state, setState] = useRecoilState(generalState);
     const [showHighScores, setShowHighScores] = useState(false);
-    const onTimerEnd = () => setShowHighScores(true);
+    const [highScores, setHighScores] = useRecoilState(highScoresState);
+
+    const onTimerEnd = useCallback(() => {
+        setHighScores(
+            [...highScores, { name: state.nickName, score: state.score }]
+                .sort((a, b) => b.score - a.score)
+                .slice(0, 10)
+        );
+        setShowHighScores(true);
+    }, [state.nickName, state.score, setHighScores]);
 
     return state.inGame ? (
         <ContainerInGame>

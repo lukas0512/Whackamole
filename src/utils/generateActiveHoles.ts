@@ -8,7 +8,6 @@ export function generateActiveHoles(
 ): ActiveHoles {
     const newActiveHoles = [];
 
-    // remove topeiras antigas que já passaram do tempo de expiração
     const now = Date.now();
     for (const [hole, expiration] of Object.entries(activeHolesExpiration)) {
         if (expiration <= now) {
@@ -19,9 +18,7 @@ export function generateActiveHoles(
         }
     }
 
-    // percorre todos os buracos ativos
     for (const activeHole of activeHoles) {
-        // verifica se o buraco deve continuar ativo
         if (
             activeHolesExpiration[activeHole] &&
             activeHolesExpiration[activeHole] > now
@@ -36,15 +33,12 @@ export function generateActiveHoles(
         }
     }
 
-    // gera número aleatório de topeiras ativas entre 1 e 2
     const numActiveHoles = Math.floor(Math.random() * 2) + 1;
 
-    // adiciona novas topeiras ativas
     while (newActiveHoles.length < numActiveHoles) {
         const randomHole = Math.floor(Math.random() * 12);
-        // verifica se o buraco já está ativo
         if (!newActiveHoles.includes(randomHole)) {
-            const activeTime = Math.random() * 1.5 + 1; // define tempo aleatório entre 2 e 3.5 segundos
+            const activeTime = Math.random() * 1.5 + 1;
             setActiveHolesExpiration({
                 ...activeHolesExpiration,
                 [randomHole]: now + activeTime,

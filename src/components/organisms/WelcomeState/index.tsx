@@ -20,6 +20,7 @@ export const WelcomeState = () => {
             <Input
                 placeholder='Nickname'
                 value={state.nickName}
+                data-testid='inputNickname'
                 onChange={(e) => {
                     setState({ ...state, nickName: e.target.value });
                 }}

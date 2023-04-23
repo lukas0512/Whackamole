@@ -1,61 +1,63 @@
 import { Button } from "@components/atoms/Button";
-import { generalState } from "@src/state/atoms/generalState";
-import { useRecoilState } from "recoil";
+import { generalState, highScoresState } from "@src/state/atoms/generalState";
+import { useRecoilState, useRecoilValue } from "recoil";
 import {
     ModalOverlay,
     ModalWrapper,
-    RankItem,
-    RankName,
-    RankPosition,
-    RankScore,
-    ScoreList,
     ScoreTitle,
+    ScoreList,
+    RankItem,
+    RankPosition,
+    RankName,
+    RankScore,
 } from "./styled";
 
-interface ModalProps {
+interface HighScoreModalProps {
     isOpen: boolean;
     onClose?: () => void;
 }
 
-export const ModalHighScores = ({ isOpen, onClose }: ModalProps) => {
+export const ModalHighScores = ({ isOpen, onClose }: HighScoreModalProps) => {
     const [state, setState] = useRecoilState(generalState);
-    const scores = [
-        { name: state.nickName, score: state.score },
-        { name: "Player 2", score: 50 },
-        { name: "Player 3", score: 25 },
-        { name: "Player 4", score: 10 },
-        { name: "Player 5", score: 5 },
-        { name: "Player 6", score: 3 },
-        { name: "Player 7", score: 2 },
-        { name: "Player 8", score: 1 },
-    ];
+    const scores = useRecoilValue(highScoresState);
 
-    const currentPlayerPosition = 1;
+    const renderRankItem = (
+        rank: number,
+        name: string,
+        score: number,
+        isCurrentPlayer: boolean
+    ) => {
+        return (
+            <RankItem key={rank} rank={rank} isCurrentPlayer={isCurrentPlayer}>
+                <RankPosition>{rank}.</RankPosition>
+                <RankName>{name}</RankName>
+                <RankScore>{score}</RankScore>
+            </RankItem>
+        );
+    };
 
     return (
         <ModalOverlay isOpen={isOpen}>
             <ModalWrapper>
-                <ScoreTitle>
-                    Your Score: <b>{state.score}</b>
-                </ScoreTitle>
+                <ScoreTitle>High Scores</ScoreTitle>
                 <ScoreList>
-                    {scores.map((item, index) => (
-                        <RankItem
-                            key={index}
-                            isCurrentPlayer={
-                                index === currentPlayerPosition - 1
-                            }
-                        >
-                            <RankPosition>{index + 1}.</RankPosition>
-                            <RankName>{item.name}</RankName>
-                            <RankScore>{item.score}</RankScore>
-                        </RankItem>
-                    ))}
+                    {scores.map(({ name, score }, index) => {
+                        const rank = index + 1;
+                        const isCurrentPlayer =
+                            name === state.nickName && score === state.score;
+
+                        return renderRankItem(
+                            rank,
+                            name,
+                            score,
+                            isCurrentPlayer
+                        );
+                    })}
                 </ScoreList>
                 <Button
                     onClick={() => {
                         onClose?.();
-                        setState({ ...state, inGame: false });
+                        setState({ ...state, inGame: false, nickName: "" });
                     }}
                 >
                     Play Again
