@@ -33,13 +33,16 @@ export function generateActiveHoles(
     }
 
     const duration = 1500 / numActiveHoles;
-    const updatedActiveHolesList = newActiveHolesList.map((hole, index) => {
-        const remainingHoles = newActiveHolesList.length - index;
-        const remainingDuration = duration * remainingHoles;
-        const randomOffset = Math.random() * remainingDuration;
-        const expiration = now + duration * index + randomOffset;
-        return { ...hole, expiration };
-    });
+    const updatedActiveHolesList = activeHolesList
+        .concat(newActiveHolesList)
+        .map((hole) => {
+            const remainingDuration = hole.expiration - now;
+            const durationRatio = duration / 1500;
+            const randomOffset =
+                Math.random() * (remainingDuration * durationRatio);
+            const expiration = now + duration + randomOffset;
+            return { ...hole, expiration };
+        });
 
     updatedActiveHolesList.sort((a, b) => a.expiration - b.expiration);
     const newActiveHoles = updatedActiveHolesList.slice(0, numActiveHoles);

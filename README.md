@@ -17,6 +17,7 @@
 
     ```
     cd whakeamole
+    yarn build
     yarn start
     ```
 

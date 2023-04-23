@@ -13,7 +13,7 @@ export const WelcomeState = () => {
     };
     return (
         <ContainerWelcomeStateStyled>
-            <Mole active number={1} />
+            <Mole active />
             <Typography size='h1' styleType='primary'>
                 <b>Whack a Mole</b>
             </Typography>

@@ -10,7 +10,10 @@ export const generalState = atom({
     },
 });
 
-export const activeHolesState = atom<number[]>({
+type ActiveHole = { id: number; expiration: number };
+type ActiveHoles = ActiveHole[];
+
+export const activeHolesState = atom<ActiveHoles>({
     key: "activeHolesState",
     default: [],
 });
