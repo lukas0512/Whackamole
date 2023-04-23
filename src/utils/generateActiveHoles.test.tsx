@@ -1,48 +1,25 @@
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { generateActiveHoles } from "./generateActiveHoles";
 
-describe("generateActiveHoles function", () => {
-    it("should remove expired holes and keep active ones", () => {
-        const activeHoles = [1, 2, 3];
-        const setActiveHoles = jest.fn();
-        const activeHolesExpiration = {
-            1: Date.now() - 100,
-            2: Date.now() + 1000,
-        };
+describe("generateActiveHoles", () => {
+    test("generates the expected number of active holes", async () => {
         const setActiveHolesExpiration = jest.fn();
-
-        generateActiveHoles(
-            activeHoles,
-            setActiveHoles,
-            activeHolesExpiration,
-            setActiveHolesExpiration
-        );
-
-        expect(setActiveHoles).toHaveBeenCalledWith([2, 3]);
-        expect(setActiveHolesExpiration).toHaveBeenCalledWith({
-            1: 0,
-            2: activeHolesExpiration[2],
+        const activeHolesExpiration = {};
+        const numHoles = 12;
+        const activeHoles = generateActiveHoles();
+        expect(activeHoles.length).toBeGreaterThan(0);
+        expect(activeHoles.length).toBeLessThanOrEqual(2);
+        for (const hole of activeHoles) {
+            expect(hole).toBeGreaterThanOrEqual(0);
+            expect(hole).toBeLessThan(numHoles);
+            expect(activeHolesExpiration[hole]).toBeGreaterThan(Date.now());
+        }
+        await waitFor(() => {
+            expect(setActiveHolesExpiration).toHaveBeenCalledTimes(
+                activeHoles.length
+            );
         });
-    });
-
-    it("should add new active holes", () => {
-        const activeHoles = [1, 2, 3];
-        const setActiveHoles = jest.fn();
-        const activeHolesExpiration = {
-            1: Date.now() - 100,
-            2: Date.now() + 1000,
-        };
-        const setActiveHolesExpiration = jest.fn();
-
-        generateActiveHoles(
-            activeHoles,
-            setActiveHoles,
-            activeHolesExpiration,
-            setActiveHolesExpiration
-        );
-
-        expect(setActiveHoles).toHaveBeenCalledWith(
-            expect.arrayContaining([expect.any(Number)])
-        );
     });
 });
 

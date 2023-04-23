@@ -3,7 +3,6 @@ import { ContainerMoleStyled } from "./styled";
 
 interface PropsMole {
     active?: boolean;
-    number: number;
     onWhack?: () => void;
 }
 

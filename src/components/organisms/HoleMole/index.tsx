@@ -21,25 +21,18 @@ export const HoleMole = () => {
 
     useEffect(() => {
         const intervalId = setInterval(() => {
-            const newActiveHoles = generateActiveHoles(
-                activeHoles,
-                setActiveHoles,
-                activeHolesExpiration,
-                setActiveHolesExpiration
-            );
-            setActiveHoles(newActiveHoles);
-        }, 1500);
+            setActiveHoles(generateActiveHoles(activeHoles, 2));
+        }, 1000);
 
         return () => clearInterval(intervalId);
-    }, [activeHoles, setActiveHoles, activeHolesExpiration]);
+    }, [activeHoles, setActiveHoles]);
 
     return (
         <HolesContainerStyled>
-            {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((item) => (
+            {[...Array(12)].map((item) => (
                 <Mole
                     key={item}
                     active={activeHoles.includes(item)}
-                    number={item}
                     onWhack={() => onWhack(item)}
                 />
             ))}

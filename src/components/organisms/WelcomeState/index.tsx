@@ -25,7 +25,12 @@ export const WelcomeState = () => {
                     setState({ ...state, nickName: e.target.value });
                 }}
             />
-            <Button onClick={handleClickStart}>Start</Button>
+            <Button
+                onClick={handleClickStart}
+                disabled={state.nickName.length < 1}
+            >
+                Start
+            </Button>
         </ContainerWelcomeStateStyled>
     );
 };

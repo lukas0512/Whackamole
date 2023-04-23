@@ -1,53 +1,49 @@
-type ActiveHoles = number[];
+type ActiveHole = { id: number; expiration: number };
+type ActiveHoles = ActiveHole[];
 
 export function generateActiveHoles(
     activeHoles: ActiveHoles,
-    setActiveHoles: (value: ActiveHoles) => void,
-    activeHolesExpiration: { [key: number]: number },
-    setActiveHolesExpiration: (value: { [key: number]: number }) => void
+    numActiveHoles: number
 ): ActiveHoles {
-    const newActiveHoles = [];
-
     const now = Date.now();
-    for (const [hole, expiration] of Object.entries(activeHolesExpiration)) {
-        if (expiration <= now) {
-            setActiveHolesExpiration({ ...activeHolesExpiration, [hole]: 0 });
-            setActiveHoles(
-                activeHoles.filter((activeHole) => activeHole !== Number(hole))
-            );
-        }
-    }
+    const activeHolesExpiration = activeHoles.reduce<{ [key: number]: number }>(
+        (acc, hole) => {
+            acc[hole.id] = hole.expiration;
+            return acc;
+        },
+        {}
+    );
 
-    for (const activeHole of activeHoles) {
-        if (
-            activeHolesExpiration[activeHole] &&
-            activeHolesExpiration[activeHole] > now
-        ) {
-            newActiveHoles.push(activeHole);
-        } else {
-            setActiveHolesExpiration({
-                ...activeHolesExpiration,
-                [activeHole]: 0,
+    const activeHolesList = [];
+    for (let i = 0; i < 12; i++) {
+        if (activeHolesExpiration[i] && activeHolesExpiration[i] > now) {
+            activeHolesList.push({
+                id: i,
+                expiration: activeHolesExpiration[i],
             });
-            setActiveHoles(activeHoles.filter((hole) => hole !== activeHole));
         }
     }
 
-    const numActiveHoles = Math.floor(Math.random() * 2) + 1;
-
-    while (newActiveHoles.length < numActiveHoles) {
+    const newActiveHolesList: { id: number; expiration: number }[] = [];
+    while (newActiveHolesList.length < numActiveHoles) {
         const randomHole = Math.floor(Math.random() * 12);
-        if (!newActiveHoles.includes(randomHole)) {
-            const activeTime = Math.random() * 1.5 + 1;
-            setActiveHolesExpiration({
-                ...activeHolesExpiration,
-                [randomHole]: now + activeTime,
-            });
-            newActiveHoles.push(randomHole);
+        if (!newActiveHolesList.some((hole) => hole.id === randomHole)) {
+            newActiveHolesList.push({ id: randomHole, expiration: 0 });
         }
     }
 
-    setActiveHoles(newActiveHoles);
+    const duration = 1500 / numActiveHoles;
+    const updatedActiveHolesList = newActiveHolesList.map((hole, index) => {
+        const remainingHoles = newActiveHolesList.length - index;
+        const remainingDuration = duration * remainingHoles;
+        const randomOffset = Math.random() * remainingDuration;
+        const expiration = now + duration * index + randomOffset;
+        return { ...hole, expiration };
+    });
+
+    updatedActiveHolesList.sort((a, b) => a.expiration - b.expiration);
+    const newActiveHoles = updatedActiveHolesList.slice(0, numActiveHoles);
+
     return newActiveHoles;
 }
 

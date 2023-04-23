@@ -1,3 +1,4 @@
+import { generateActiveHoles } from "@src/utils/generateActiveHoles";
 import { atom } from "recoil";
 
 export const generalState = atom({
